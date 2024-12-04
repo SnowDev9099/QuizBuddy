@@ -1,60 +1,64 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f4f8;
-    color: #333;
-    margin: 0;
-    padding: 0;
-}
+const correctAnswers = {
+    q1: 'a',
+    q2: 'b',
+    q3: 'a',
+    q4: 'a',
+    q5: 'a',
+    q6: 'a',
+    q7: 'a',
+    q8: 'a',
+    q9: 'a',
+    q10: 'a',
+    q11: 'a',
+    q12: 'a',
+    q13: 'a',
+    q14: 'a',
+    q15: 'a',
+    q16: 'a',
+    q17: 'a',
+    q18: 'a',
+    q19: 'a',
+    q20: 'a'
+};
 
-header {
-    background-color: #4a90e2;
-    color: white;
-    text-align: center;
-    padding: 1em 0;
-}
+function submitQuiz() {
+    let score = 0;
+    const incorrectAnswersList = [];
+    const quizForm = document.getElementById('quiz-form');
 
-h1 {
-    margin: 0;
-}
+    // Check answers
+    for (let question in correctAnswers) {
+        const selectedAnswer = quizForm.querySelector(`input[name="${question}"]:checked`);
+        if (selectedAnswer && selectedAnswer.value === correctAnswers[question]) {
+            score++;
+        } else {
+            if (selectedAnswer) {
+                incorrectAnswersList.push({
+                    question: question,
+                    selectedAnswer: selectedAnswer.value
+                });
+            } else {
+                incorrectAnswersList.push({
+                    question: question,
+                    selectedAnswer: null
+                });
+            }
+        }
+    }
 
-section {
-    max-width: 800px;
-    margin: 20px auto;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+    // Show score
+    document.getElementById('score').innerText = `You scored ${score} out of 20.`;
+    
+    // Show incorrect answers
+    const incorrectList = document.getElementById('incorrect-list');
+    incorrectList.innerHTML = '';
+    incorrectAnswersList.forEach(incorrect => {
+        const li = document.createElement('li');
+        li.textContent = `Question ${incorrect.question}: Your answer: ${incorrect.selectedAnswer || 'No answer'} (Correct answer: ${correctAnswers[incorrect.question]})`;
+        incorrectList.appendChild(li);
+    });
 
-h2 {
-    color: #4a90e2;
-}
-
-.question {
-    margin: 15px 0;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-}
-
-button {
-    background-color: #4a90e2;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    display: block;
-    margin: 20px auto;
-    font-size: 16px;
-}
-
-button:hover {
-    background-color: #357ab7;
-}
-
-.result {
-    text-align: center;
-    font-size: 1.2em;
-    margin-top: 20px;
-    font-weight: bold;
+    // Hide quiz form and show result
+    document.getElementById('quiz').style.display = 'none';
+    document.getElementById('result').style.display = 'block';
 }
