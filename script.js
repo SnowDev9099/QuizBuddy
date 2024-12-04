@@ -1,45 +1,64 @@
-document.getElementById('quiz-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // Array of correct answers (corresponding to each question)
-    const correctAnswers = ['b', 'b', 'a', 'a', 'b', 'b', 'b', 'c', 'a', 'b', 'a', 'b', 'b', 'c', 'c', 'a', 'a', 'b', 'b', 'a'];
-    
+const correctAnswers = {
+    q1: 'a',
+    q2: 'b',
+    q3: 'a',
+    q4: 'a',
+    q5: 'a',
+    q6: 'a',
+    q7: 'a',
+    q8: 'a',
+    q9: 'a',
+    q10: 'a',
+    q11: 'a',
+    q12: 'a',
+    q13: 'a',
+    q14: 'a',
+    q15: 'a',
+    q16: 'a',
+    q17: 'a',
+    q18: 'a',
+    q19: 'a',
+    q20: 'a'
+};
+
+function submitQuiz() {
     let score = 0;
-    
-    // Loop through each question and check the user's answer
-    for (let i = 1; i <= correctAnswers.length; i++) {
-        const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
-        if (selectedOption && selectedOption.value === correctAnswers[i - 1]) {
+    const incorrectAnswersList = [];
+    const quizForm = document.getElementById('quiz-form');
+
+    // Check answers
+    for (let question in correctAnswers) {
+        const selectedAnswer = quizForm.querySelector(`input[name="${question}"]:checked`);
+        if (selectedAnswer && selectedAnswer.value === correctAnswers[question]) {
             score++;
+        } else {
+            if (selectedAnswer) {
+                incorrectAnswersList.push({
+                    question: question,
+                    selectedAnswer: selectedAnswer.value
+                });
+            } else {
+                incorrectAnswersList.push({
+                    question: question,
+                    selectedAnswer: null
+                });
+            }
         }
     }
+
+    // Show score
+    document.getElementById('score').innerText = `You scored ${score} out of 20.`;
     
-    // Calculate the percentage score
-    const percentage = (score / correctAnswers.length) * 100;
-    
-    // Determine the level based on the score
-    let resultText;
-    if (percentage === 100) {
-        resultText = `🌟 Perfect! You got all ${score} out of ${correctAnswers.length} correct! 🌟`;
-    } else if (percentage >= 80) {
-        resultText = `Great job! You scored ${score} out of ${correctAnswers.length}. Keep it up!`;
-    } else if (percentage >= 50) {
-        resultText = `Good effort! You scored ${score} out of ${correctAnswers.length}. Study a bit more!`;
-    } else {
-        resultText = `You scored ${score} out of ${correctAnswers.length}. Don't worry, review the material and try again!`;
-    }
+    // Show incorrect answers
+    const incorrectList = document.getElementById('incorrect-list');
+    incorrectList.innerHTML = '';
+    incorrectAnswersList.forEach(incorrect => {
+        const li = document.createElement('li');
+        li.textContent = `Question ${incorrect.question}: Your answer: ${incorrect.selectedAnswer || 'No answer'} (Correct answer: ${correctAnswers[incorrect.question]})`;
+        incorrectList.appendChild(li);
+    });
 
-    // Display the result
-    const resultSection = document.createElement('div');
-    resultSection.className = 'result';
-    resultSection.textContent = resultText;
-
-    // Remove previous result if any
-    const existingResult = document.querySelector('.result');
-    if (existingResult) {
-        existingResult.remove();
-    }
-
-    // Append the result to the form
-    document.getElementById('quiz').appendChild(resultSection);
-});
+    // Hide quiz form and show result
+    document.getElementById('quiz').style.display = 'none';
+    document.getElementById('result').style.display = 'block';
+}
